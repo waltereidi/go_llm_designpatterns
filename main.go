@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	resp, err := llm.Ask("Explique Golang em uma frase")
+	resp, err := llm.Ask("diga olá mundo em ingles")
 	if err != nil {
 		panic(err)
 	}

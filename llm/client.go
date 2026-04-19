@@ -2,49 +2,49 @@ package llm
 
 import (
 	"encoding/json"
-	"os"
+	"fmt"
 
 	"github.com/go-resty/resty/v2"
 )
 
-type Message struct {
-	Role    string `json:"role"`
-	Content string `json:"content"`
-}
-
 type Request struct {
-	Model    string    `json:"model"`
-	Messages []Message `json:"messages"`
+	Model  string `json:"model"`
+	Prompt string `json:"prompt"`
+	Stream bool   `json:"stream"`
 }
 
 type Response struct {
-	Choices []struct {
-		Message Message `json:"message"`
-	} `json:"choices"`
+	Response string `json:"response"`
+	Error    string `json:"error,omitempty"`
 }
 
 func Ask(prompt string) (string, error) {
 	client := resty.New()
 
 	reqBody := Request{
-		Model: "gpt-4o-mini",
-		Messages: []Message{
-			{Role: "user", Content: prompt},
-		},
+		Model:  "granite4:350m",
+		Prompt: prompt,
+		Stream: false,
 	}
 
 	resp, err := client.R().
-		SetHeader("Authorization", "Bearer "+os.Getenv("OPENAI_API_KEY")).
 		SetHeader("Content-Type", "application/json").
 		SetBody(reqBody).
-		Post("https://api.openai.com/v1/chat/completions")
+		Post("http://localhost:11434/api/generate")
 
 	if err != nil {
 		return "", err
 	}
 
 	var result Response
-	json.Unmarshal(resp.Body(), &result)
+	err = json.Unmarshal(resp.Body(), &result)
+	if err != nil {
+		return "", err
+	}
 
-	return result.Choices[0].Message.Content, nil
+	if result.Error != "" {
+		return "", fmt.Errorf(result.Error)
+	}
+
+	return result.Response, nil
 }
