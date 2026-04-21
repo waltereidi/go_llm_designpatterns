@@ -1,6 +1,8 @@
 package main
 
 import (
+	"encoding/json"
+	"go_llm_designpatterns/models"
 	"log"
 
 	"github.com/streadway/amqp"
@@ -18,7 +20,7 @@ func main() {
 	failOnError(err, "Erro ao conectar no RabbitMQ")
 	defer conn.Close()
 
-	// 📡 Canal
+	// // 📡 Canal
 	ch, err := conn.Channel()
 	failOnError(err, "Erro ao abrir canal")
 	defer ch.Close()
@@ -36,7 +38,7 @@ func main() {
 
 	// 👂 Consumir mensagens
 	msgs, err := ch.Consume(
-		"minha_fila",
+		"LLM_QUEUE",
 		"",    // consumer
 		false, // auto-ack (false = manual)
 		false, // exclusive
@@ -63,14 +65,24 @@ func main() {
 			// ✅ Confirma processamento
 			d.Ack(false)
 		}
+
 	}()
 
 	log.Println("🚀 Aguardando mensagens...")
 	<-forever
 }
 
-func processMessage(body []byte) error {
-	// Simula lógica de negócio
-	log.Printf("🔧 Processando: %s", string(body))
-	return nil
+func processMessage(factory *CommandFactory, body []byte) error {
+	var msg models.Message
+
+	if err := json.Unmarshal(body, &msg); err != nil {
+		return err
+	}
+
+	cmd, err := factory.GetCommand(msg.Type)
+	if err != nil {
+		return err
+	}
+
+	return cmd.Execute(msg.Payload)
 }
