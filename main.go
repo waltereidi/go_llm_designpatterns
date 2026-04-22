@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	. "go_llm_designpatterns/factory"
 	"go_llm_designpatterns/models"
 	"log"
 
@@ -26,19 +27,19 @@ func main() {
 	defer ch.Close()
 
 	// // 📬 Declarar fila
-	// q, err := ch.QueueDeclare(
-	// 	"minha_fila", // nome
-	// 	true,         // durável
-	// 	false,        // auto-delete
-	// 	false,        // exclusiva
-	// 	false,        // no-wait
-	// 	nil,          // args
-	// )
-	// failOnError(err, "Erro ao declarar fila")
+	q, err := ch.QueueDeclare(
+		"LLM_QUEUE", // nome
+		true,        // durável
+		false,       // auto-delete
+		false,       // exclusiva
+		false,       // no-wait
+		nil,         // args
+	)
+	failOnError(err, "Erro ao declarar fila")
 
 	// 👂 Consumir mensagens
 	msgs, err := ch.Consume(
-		"LLM_QUEUE",
+		q.Name,
 		"",    // consumer
 		false, // auto-ack (false = manual)
 		false, // exclusive
@@ -49,13 +50,14 @@ func main() {
 	failOnError(err, "Erro ao registrar consumer")
 
 	forever := make(chan bool)
+	factory := NewCommandFactory()
 
 	go func() {
 		for d := range msgs {
 			log.Printf("📥 Mensagem recebida: %s", d.Body)
 
 			// ⚙️ Processamento da mensagem
-			err := processMessage(d.Body)
+			err := processMessage(factory, d.Body)
 			if err != nil {
 				log.Printf("❌ Erro ao processar: %s", err)
 				d.Nack(false, true) // requeue
