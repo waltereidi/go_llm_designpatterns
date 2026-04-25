@@ -60,7 +60,8 @@ func main() {
 			err := processMessage(factory, d.Body)
 			if err != nil {
 				log.Printf("❌ Erro ao processar: %s", err)
-				d.Nack(false, true) // requeue
+				//d.Nack(false, true) // requeue
+				d.Ack(false)
 				continue
 			}
 
