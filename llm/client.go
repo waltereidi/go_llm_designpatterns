@@ -12,7 +12,6 @@ type Request struct {
 	Prompt string `json:"prompt"`
 	Stream bool   `json:"stream"`
 }
-
 type Response struct {
 	Response string `json:"response"`
 	Error    string `json:"error,omitempty"`

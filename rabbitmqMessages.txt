@@ -1,0 +1,6 @@
+{
+  "type": "tag_extraction",
+  "payload": {
+    "Data": "Domain-Driven Design (DDD) is a software development approach that focuses on building systems based on a deep understanding of the business domain—the real-world problems the software is meant to solve.\n\nIt was popularized by Eric Evans in his book Domain-Driven Design: Tackling Complexity in the Heart of Software."
+  }
+}

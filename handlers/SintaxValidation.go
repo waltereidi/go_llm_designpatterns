@@ -3,19 +3,22 @@ package handlers
 import (
 	"encoding/json"
 	"log"
+	"go_llm_designpatterns/llm"
 )
 
 type SintaxValidationCommand struct{}
 
 func (c *SintaxValidationCommand) Execute(body []byte) error {
 	var data struct {
-		Name string `json:"name"`
+		Data string `json:"data"`
 	}
 
 	if err := json.Unmarshal(body, &data); err != nil {
 		return err
 	}
 
-	log.Printf("👤 Criando usuário: %s", data.Name)
+	llm.Ask("Verifique se esta frase está sintaticamente correta: " + data.Data)
+
+	log.Printf("👤 Criando usuário: %s", data.Data)
 	return nil
 }

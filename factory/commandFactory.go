@@ -14,6 +14,8 @@ func NewCommandFactory() *CommandFactory {
 	return &CommandFactory{
 		commands: map[string]interfaces.CommandPattern{
 			"syntax_validation": &handlers.SintaxValidationCommand{},
+			"tag_extraction":    &handlers.TagExtractionCommand{},
+			"text_formatting":   &handlers.TextFormattingCommand{},
 		},
 	}
 }
