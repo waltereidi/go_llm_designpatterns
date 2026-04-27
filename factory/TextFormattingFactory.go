@@ -1,22 +1,14 @@
-package main
+package factory
 
-type Adidas struct {
+import "interfaces"
+
+type TextFormattingFactory struct {
+	createStrategy interfaces.IPromptStrategy
 }
 
-func (a *Adidas) makeShoe() IShoe {
-	return &AdidasShoe{
-		Shoe: Shoe{
-			logo: "adidas",
-			size: 14,
-		},
-	}
-}
+func createStrategy() *interfaces.IPromptStrategy {
+	return &TextFormattingStrategy{
 
-func (a *Adidas) makeShirt() IShirt {
-	return &AdidasShirt{
-		Shirt: Shirt{
-			logo: "adidas",
-			size: 14,
-		},
+
 	}
 }

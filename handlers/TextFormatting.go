@@ -23,6 +23,7 @@ func (c *TextFormattingCommand) Execute(body []byte) error {
 	if err := json.Unmarshal(body, &data); err != nil {
 		return err
 	}
+	
 	formatedString := strings.ReplaceAll(data.Data, "\r", "")
 	result, err := llm.Ask(GetTemplateText(formatedString))
 	if err != nil {
