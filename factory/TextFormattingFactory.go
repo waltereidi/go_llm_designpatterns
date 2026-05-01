@@ -1,14 +1,10 @@
 package factory
 
-import "interfaces"
+import "go_llm_designpatterns/interfaces"
 
-type TextFormattingFactory struct {
-	createStrategy interfaces.IPromptStrategy
+type TextFormattingFactory(i string ) struct {
 }
 
-func createStrategy() *interfaces.IPromptStrategy {
-	return &TextFormattingStrategy{
-
-
-	}
+func (tf *TextFormattingFactory) CreateStrategy() interfaces.IPromptStrategy {
+	return &TextFormattingStrategy{}
 }
