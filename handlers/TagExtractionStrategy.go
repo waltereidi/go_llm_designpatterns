@@ -7,23 +7,23 @@ import (
 	"strings"
 )
 
-type TagExtractionCommand struct{}
+type TagExtractionStrategy struct{}
 
-func (c *TagExtractionCommand) Execute(body []byte) error {
+func (c *TagExtractionStrategy) Start(body []byte) (string, error) {
 	var data struct {
 		Data string `json:"data"`
 	}
 
 	if err := json.Unmarshal(body, &data); err != nil {
-		return err
+		return "", err
 	}
 	formatedString := strings.ReplaceAll(data.Data, "\r", "")
 	result, err := llm.Ask("Extract key words from this phrase: " + formatedString)
 	if err != nil {
-		return err
+		return "", err
 	}
 	log.Printf(result)
 
 	log.Printf("👤 Criando usuário: %s", data.Data)
-	return nil
+	return result, nil
 }

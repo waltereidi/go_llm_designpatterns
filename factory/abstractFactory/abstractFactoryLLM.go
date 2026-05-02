@@ -7,8 +7,14 @@ import (
 )
 
 func GetLLMFactory(operation string) (interfaces.IPromptFactory, error) {
-	if operation == "text_formatting" {
+
+	switch operation {
+	case "text_formatting":
 		return &factory.TextFormattingFactory{}, nil
+	case "tag_extraction":
+		return &factory.TagExtractionFactory{}, nil
+	case "syntax_validation":
+		return &factory.SintaxValidationFactory{}, nil
 	}
 
 	return nil, fmt.Errorf("invalid operation: %s", operation)

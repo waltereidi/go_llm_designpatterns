@@ -1,5 +1,5 @@
 package interfaces
 
 type IPromptStrategy interface {
-	Start() string
+	Start(body []byte) (string, error)
 }
