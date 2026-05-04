@@ -59,6 +59,7 @@ func (hm *RabbitMQConfig) HandleMessage(msgs <-chan *amqp.Delivery) {
 		Ifactory := factory.CreateFactory(d.Body)
 		strategy := Ifactory.CreateStrategy()
 		strategy.Start(d.Body)
+		
 
 		// ⚙️ Processamento da mensagem
 		err := hm.processMessage(factory, d.Body)
@@ -73,18 +74,4 @@ func (hm *RabbitMQConfig) HandleMessage(msgs <-chan *amqp.Delivery) {
 		d.Ack(false)
 	}
 
-func (pm *RabbitMQConfig) processMessage(factory *CommandFactory, body []byte) error {
-	var msg models.Message
-
-	if err := json.Unmarshal(body, &msg); err != nil {
-		return err
-	}
-
-	cmd, err := factory.GetCommand(msg.Type)
-	if err != nil {
-		return err
-	}
-
-	return cmd.Execute(msg.Payload)
-}
 }
