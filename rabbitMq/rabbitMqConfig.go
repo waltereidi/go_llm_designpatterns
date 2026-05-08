@@ -11,7 +11,7 @@ import (
 type RabbitMQConfig struct {
 }
 
-func (cho *RabbitMQConfig) ConfigureHost() (<-chan *amqp.Delivery, error) {
+func (cho *RabbitMQConfig) ConfigureHost() (<-chan amqp.Delivery, error) {
 	conn, err := amqp.Dial("amqp://admin:admin@localhost:5672/")
 	cho.failOnError(err, "Erro ao conectar no RabbitMQ")
 	defer conn.Close()
@@ -43,7 +43,7 @@ func (cho *RabbitMQConfig) ConfigureHost() (<-chan *amqp.Delivery, error) {
 		nil,   // args
 	)
 	cho.failOnError(err, "Erro ao registrar consumer")
-	return &msgs, nil
+	return msgs, nil
 }
 func (FoE *RabbitMQConfig) failOnError(err error, msg string) {
 	if err != nil {
@@ -59,7 +59,6 @@ func (hm *RabbitMQConfig) HandleMessage(msgs <-chan *amqp.Delivery) {
 		Ifactory := factory.CreateFactory(d.Body)
 		strategy := Ifactory.CreateStrategy()
 		strategy.Start(d.Body)
-		
 
 		// ⚙️ Processamento da mensagem
 		err := hm.processMessage(factory, d.Body)

@@ -12,12 +12,12 @@ type AbstractFactoryLLM struct{}
 func (af *AbstractFactoryLLM) GetLLMFactory(msg *[]byte) (interfaces.IPromptFactory, error) {
 	var message models.Message
 	message.MessageToModel(*msg)
-	result, err := af.CommandGetFactory(&message.Type)
+	result, err := af.commandGetFactory(&message.Type)
 
 	return result, err
 }
 
-func (cgf *AbstractFactoryLLM) CommandGetFactory(op *string) (interfaces.IPromptFactory, error) {
+func (cgf *AbstractFactoryLLM) commandGetFactory(op *string) (interfaces.IPromptFactory, error) {
 
 	switch *op {
 	case "text_formatting":
